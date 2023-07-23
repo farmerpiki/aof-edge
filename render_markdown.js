@@ -5,12 +5,7 @@ marked.use({
   headerIds: false
 });
 
-export async function render_markdown(context, key) {
-  var value = await context.env.BLOG.get(key);
-
-  if (value === null) {
-    value = "<h1>Adică știi când țiuie?</h1>";//return new Response("Page not found", { status: 404 });
-  }
+export function render_html(body) {
   var response = new Response(`
 <!DOCTYPE html>
 <html lang="en">
@@ -35,7 +30,7 @@ export async function render_markdown(context, key) {
 </nav>
 </header>
 <main>
-` + marked.parse(value) + `
+` + body + `
 </main>
 <footer>
 © 2023 Art of Feeling
@@ -47,5 +42,15 @@ export async function render_markdown(context, key) {
     { headers: { "Content-Type": "text/html" } }
   );
   return response;
+
+}
+
+export async function render_markdown(context, key) {
+  var value = await context.env.BLOG.get(key);
+
+  if (value === null) {
+    return new Response("Page not found", { status: 404 });
+  }
+  return render_html(marked.parse(value));
 }
 
