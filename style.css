@@ -1,0 +1,223 @@
+:root {
+  --primary-color: #b28970;
+  --secondary-color: #8c6b58;
+  --background-color: #f5f5f5;
+  --light-background-color: #e9dcd6;
+  --border-color: #ccc;
+  --text-color: #fff;
+  --text-shadow-color: #000;
+  --box-shadow-color: #777;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+body {
+	display: flex;
+	justify-content: center;
+	height: 100vh;
+	background: var(--background-color);
+	line-height: 1.5rem;
+}
+
+body>div {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	margin: 0 auto;
+}
+
+main {
+	flex: 1;
+	overflow: auto;
+	padding: 1.5rem 0;
+}
+
+footer {
+	flex: 0;
+}
+
+div header {
+	display: block;
+	justify-content: center;
+	align-items: center;
+	font-size: 1.2em;
+	margin: 0 auto;
+	width: -moz-available;
+	width: -webkit-fill-available;
+	width: stretch;
+}
+
+header nav {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	position: relative;
+}
+
+nav a, nav label {
+	margin: 5px 1rem 5px 0;
+	padding: 0.5rem 1rem;
+	border-radius: 1.5rem 0 1.5rem 0;
+}
+
+nav a:first-child {
+	margin-right: auto;
+}
+
+nav label {
+	margin-left: auto;
+	display: none;
+	position: absolute;
+	right: 0px;
+	margin-top: 5px;
+}
+
+nav input {
+	display: none;
+}
+
+@media only screen and (max-width: 900px) {
+	header nav {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	nav label {
+		display: block;
+	}
+	nav a:not(:first-child) {
+		display: none;
+	}
+	nav input:checked~a:not(:first-child) {
+		display: block;
+	}
+}
+
+a, nav label, body>div>div>button, body>div>div>form>button {
+	background-color: var(--primary-color);
+	color: var(--text-color);
+	text-decoration: none;
+	font-weight: bold;
+	border: 1px var(--border-color) solid;
+	box-shadow: 0 0.3rem 0.3rem 0.1rem var(--border-color);
+	text-shadow: 0 0.1rem 0.1rem var(--text-shadow-color);
+}
+
+body>div>div>button, body>div>div>form>* {
+	padding: 6px 6px;
+	border-radius: 4px;
+	margin-left: 6px;
+}
+
+body>div>div>form>input {
+	border: 1px solid var(--border-color);
+}
+
+body>div>div>form {
+	display: inline-block;
+}
+
+main a {
+	padding: 0.1rem 0.5rem;
+	border-radius: 0.6rem;
+}
+
+h1, h2, h3, h4 {
+	color: var(--secondary-color);
+	padding: 0.3rem min(3rem, 5%);
+	box-shadow: 0 0.2rem 0.4rem var(--box-shadow-color);
+}
+
+h1, h2, h3, h4, p {
+	min-height: 1em;
+}
+
+div header, main p, main ul {
+	padding: 0 min(3rem, 5%);
+}
+
+main ul, main ol{
+	margin-left: 2em;
+}
+
+main form input, main form textarea {
+	padding: 0.5rem;
+	border: 1px var(--border-color) solid;
+	border-radius: 0.5rem;
+	margin-top: 0.5rem;
+	width: -moz-available;
+	width: -webkit-fill-available;
+	width: stretch;
+}
+
+main form textarea {
+	height: 8rem;
+}
+
+main form input[type=submit] {
+	width: auto;
+	background-color: var(--primary-color);
+	font-weight: bold;
+	color: var(--text-color);
+	box-shadow: 0 0.3rem 0.3rem 0.1rem var(--box-shadow-color);
+	text-shadow: 0 0.1rem 0.1rem var(--text-shadow-color);
+}
+
+.presentation {
+	display: flex;
+	flex-direction: row;
+	border-radius: 0 5rem 0 5rem;
+	overflow: hidden;
+	background-color: var(--light-background-color);
+	margin: 0 3rem;
+	box-shadow: 0 0.3rem 0.3rem 0.1rem var(--border-color);
+}
+
+.presentation>div {
+	flex: 1;
+}
+
+.presentation>div p.info {
+	text-align: right;
+	align-self: flex-end;
+}
+
+.presentation aside {
+	flex: 0;
+}
+
+.presentation aside img {
+	aspect-ratio: 3/4;
+	width: 240px;
+}
+
+.presentation aside button {
+	width: 100%;
+	background-color: var(--primary-color);
+	color: var(--text-color);
+	text-shadow: 0 0.1rem 0.1rem var(--text-shadow-color);
+	border: 0 none;
+	font-size: 1.2rem;
+	padding: 0.5rem;
+}
+
+@media only screen and (max-width: 900px) {
+.presentation {
+	flex-direction: column;
+	min-height: 100px;
+	width: 100%;
+}
+.presentation aside {
+	order: -1;
+}
+.presentation aside img {
+	width: 100%;
+}
+}
+
