@@ -1,9 +1,6 @@
-export async function onRequest(context) {
-  const value = await context.env.BLOG.get("first-key");
+import { render_markdown } from "../render_markdown.js"
 
-  if (value === null) {
-    return new Response("Value not found", { status: 404 });
-  }
-  return new Response(value).headers({ "content-type": "text/html" });
+export async function onRequest(context) {
+  return render_markdown(context, "pages:index");
 }
 
