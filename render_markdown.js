@@ -22,9 +22,25 @@ export async function render_markdown(context, key) {
 <title>Art of Feeling</title>
 </head>
 <body>
+<div>
+<header>
+<nav>
+<a href="/">Art of Feeling</a>
+<input type="checkbox" id="showmenu"><label for="showmenu">≡</label>
+<a href="/about">Cine suntem</a>
+<a href="/services">Servicii</a>
+<a href="/blog">Blog</a>
+<a href="/schedule">Programări</a>
+<a href="/contact">Contact</a>
+</nav>
+</header>
 <main>
 ` + marked.parse(value) + `
 </main>
+<footer>
+© 2023 Art of Feeling
+</footer>
+</div>
 </body>
 </html>
 `,
