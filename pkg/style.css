@@ -99,7 +99,30 @@ nav input {
 	}
 }
 
-a, nav label, body>div>div>button, body>div>div>form>button {
+main>form {
+	display: flex;
+	flex-direction: column;
+	width: 49%;
+	height: 100%;
+	align-items: center;
+}
+
+main>form>textarea {
+	width: 100%;
+	flex: 1;
+}
+
+main:has(>form) {
+	display: flex;
+	flex-direction: row;
+}
+
+main>form>button {
+	padding: 10px;
+	height: 3em;
+}
+
+a, nav label, body>div>div>button, form>button {
 	background-color: var(--primary-color);
 	color: var(--text-color);
 	text-decoration: none;
@@ -219,5 +242,25 @@ main form input[type=submit] {
 .presentation aside img {
 	width: 100%;
 }
+}
+
+#notification {
+    display: none;
+    padding: 10px;
+    position: absolute;
+    right: 3.5rem;
+    top: 3.5rem;
+}
+
+#notification.success {
+    border: 1px solid green;
+    background-color: #e6ffe6;  /* light green background */
+    display: block;
+}
+
+#notification.failure {
+    border: 1px solid red;
+    background-color: #ffe6e6;  /* light red background */
+    display: block;
 }
 
