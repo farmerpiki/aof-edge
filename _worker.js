@@ -13,6 +13,7 @@ function render_html(body, status = 200, extra_head = "") {
 <meta charset="utf-8">
 <link rel="icon" href="/pkg/favicon.ico">
 <link rel="stylesheet" href="/pkg/style.css">
+<script src="/pkg/htmx.min.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 ` + extra_head + `
 <title>Art of Feeling</title>
