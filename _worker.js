@@ -36,6 +36,14 @@ function render_html(body, status = 200, extra_head = "") {
 </main>
 <footer>
 © 2023 Art of Feeling
+<a href="https://www.facebook.com/Art-Of-Feeling-108957027466733"></a>
+<a href="https://www.linkedin.com/in/adela-margin/"></a>
+<a href="https://www.instagram.com/marginadela/">󰋾</a>
+<a href="tel:+40740056316"></a>
+<a href="mailto:adela.margin@gmail.com">󰴃</a>
+<a href="https://wa.me/+40740056316">󰖣</a>
+<a href="https://goo.gl/maps/PuEZqS9BTHyuz6Zd8"></a>
+<a href="https://youtube.com/@adelamargin595"></a>
 </footer>
 </div>
 </body>
