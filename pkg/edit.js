@@ -23,6 +23,7 @@ window.addEventListener('load', (event) => {
     headerIds: false
   });
   var editor = document.querySelector('main>form>textarea');
+  editor.parentNode.parentNode.style.display = 'flex';
   editor.addEventListener('input', update_html_from_markdown);
   update_html_from_markdown();
   var button = document.querySelector('main>form>button[type=submit]');
