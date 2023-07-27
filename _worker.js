@@ -19,7 +19,6 @@ function render_html(body, status = 200, extra_head = "") {
 <title>Art of Feeling</title>
 </head>
 <body>
-<div>
 <header>
 <nav>
 <a href="/">Art of Feeling</a>
@@ -45,7 +44,6 @@ function render_html(body, status = 200, extra_head = "") {
 <a href="https://goo.gl/maps/PuEZqS9BTHyuz6Zd8"></a>
 <a href="https://youtube.com/@adelamargin595"></a>
 </footer>
-</div>
 </body>
 </html>
 `,
