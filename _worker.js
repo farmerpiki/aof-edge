@@ -67,7 +67,7 @@ function render_404() {
 }
 
 async function render_markdown(env, key) {
-  var value = await env.BLOG.get(key);
+  var value = await env.AoF.get(key);
 
   if (value === null) {
     return render_404();
@@ -77,7 +77,7 @@ async function render_markdown(env, key) {
 }
 
 async function render_editor(env, key) {
-  var value = await env.BLOG.get(key);
+  var value = await env.AoF.get(key);
 
   if (value === null) {
     value = "";
@@ -126,7 +126,7 @@ export default {
 
       } else {
         var json = await request.json()
-        await environment.BLOG.put(subpath, json.content);
+        await environment.AoF.put(subpath, json.content);
         return new Response('ok: ' + json.content);
       }
     }
