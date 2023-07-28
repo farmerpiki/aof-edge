@@ -21,6 +21,7 @@ function render_html(body, options = {}) {
 <meta charset="utf-8">
 <link rel="icon" href="/pkg/favicon.ico">
 <link rel="stylesheet" href="/pkg/style.css">
+<script src="/pkg/default.js"></script>
 <script src="/pkg/htmx.min.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Art of Feeling</title>
@@ -29,7 +30,7 @@ function render_html(body, options = {}) {
 <header>
 <nav>
 <a href="/">Art of Feeling</a>
-<button id="theme" hx-on:click="htmx.toggleClass(document.documentElement, 'dark')">󰖨/󰽥</button>
+<button id="theme" hx-on:click="setTheme(document.documentElement.classList.contains('dark') ? 'light' : 'dark')">󰖨/󰽥</button>
 <span id="spacer"> </span>
 <input type="checkbox" id="showmenu"><label for="showmenu">≡</label>
 <a href="/about">Cine suntem</a>
