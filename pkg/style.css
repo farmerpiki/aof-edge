@@ -9,11 +9,28 @@
   --primary-color: #b28970;
   --secondary-color: #8c6b58;
   --background-color: #f5f5f5;
+  --heading-background: hsla(0, 0%, 0%, 3%);
   --light-background-color: #e9dcd6;
   --border-color: #ccc;
-  --text-color: #fff;
-  --text-shadow-color: #000;
+  --light-text-color: #fff;
+  --dark-text-color: #000;
+  --light-shadow: #000;
+  --dark-shadow: #fff;
   --box-shadow-color: #777;
+}
+
+html.dark {
+	--primary-color: hsl(27, 32%, 39%);
+  --secondary-color: hsl(27, 20%, 50%);
+  --background-color: hsl(0, 0%, 10%);
+  --heading-background: hsla(0, 0%, 100%, 3%);
+  --light-background-color: hsl(27, 20%, 9%);
+  --border-color: hsl(0, 0%, 20%);
+  --light-text-color: hsl(0, 0%, 0%);
+  --dark-text-color: hsl(0, 0%, 100%);
+  --light-shadow: hsl(0, 0%, 100%);
+  --dark-shadow: hsl(0, 0%, 0%);
+  --box-shadow-color: hsl(0, 0%, 39%);
 }
 
 html, body {
@@ -30,6 +47,7 @@ body {
 	height: 100vh;
 	margin: 0 auto;
 	background: var(--background-color);
+	color: var(--dark-text-color);
 	font-family: 'Quicksand', sans-serif;
 	line-height: 1.5rem;
 	font-weight: 500;
@@ -71,6 +89,7 @@ header {
 header nav {
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
 	width: 100%;
 	height: 100%;
 	padding: 0;
@@ -78,22 +97,31 @@ header nav {
 	position: relative;
 }
 
-nav a, nav label {
+header nav span {
+	flex-grow: 1;
+}
+
+header nav div {
+	display: flex;
+	align-items: center;
+}
+
+nav a, nav label, nav button {
 	margin: 5px 1rem 5px 0;
 	padding: 0.5rem 1rem;
+}
+
+nav a, nav label {
 	border-radius: 1.5rem 0 1.5rem 0;
 }
 
-nav a:first-child {
-	margin-right: auto;
+nav button {
+	border-radius: 1.5rem;
 }
 
 nav label {
 	margin-left: auto;
 	display: none;
-	position: absolute;
-	right: 0px;
-	margin-top: 5px;
 }
 
 nav input {
@@ -102,9 +130,17 @@ nav input {
 
 @media only screen and (max-width: 900px) {
 	header nav {
-		flex-direction: column;
-		align-items: flex-start;
+		display: grid;
+		grid-template-columns: auto auto auto auto;
 	}
+
+	header nav span#spacer {
+		background: transparent;
+		display: inline-block;
+		width: 10px;
+		height: 10px;
+	}
+
 	nav label {
 		display: block;
 	}
@@ -113,18 +149,21 @@ nav input {
 	}
 	nav input:checked~a:not(:first-child) {
 		display: block;
+		grid-column-start: 1;
+		grid-column-end: 5;
 	}
 }
 
-main>form {
+main form {
 	display: flex;
 	flex-direction: column;
 	width: 49%;
 	height: 100%;
 	align-items: center;
+	font-size: 120%;
 }
 
-main>form>textarea {
+main form textarea {
 	width: 100%;
 	flex: 1;
 }
@@ -134,32 +173,31 @@ main:has(>form) {
 	flex-direction: row;
 }
 
-main>form>button {
+main form button {
 	padding: 10px;
 	height: 3em;
 }
 
-a, nav label, body>div>button, form>button {
+a, nav label, body button, form button {
 	background-color: var(--primary-color);
-	color: var(--text-color);
+	color: var(--light-text-color);
 	text-decoration: none;
 	font-weight: bold;
 	border: 1px var(--border-color) solid;
 	box-shadow: 0 0.3rem 0.3rem 0.1rem var(--border-color);
-	text-shadow: 0 0.1rem 0.1rem var(--text-shadow-color);
 }
 
-body>div>button, body>div>form>* {
+body>button, body form>* {
 	padding: 6px 6px;
 	border-radius: 4px;
 	margin-left: 6px;
 }
 
-body>div>form>input {
+body form input {
 	border: 1px solid var(--border-color);
 }
 
-body>div>form {
+body form {
 	display: inline-block;
 }
 
@@ -170,6 +208,7 @@ main a {
 
 h1, h2, h3, h4 {
 	color: var(--secondary-color);
+	background-color: var(--heading-background);
 	font-family: 'Literata', serif;
 	padding: 0.3rem min(3rem, 5%);
 	box-shadow: 0 0.2rem 0.4rem var(--box-shadow-color);
@@ -200,10 +239,13 @@ main form input, main form textarea {
 	padding: 0.5rem;
 	border: 1px var(--border-color) solid;
 	border-radius: 0.5rem;
-	margin-top: 0.5rem;
 	width: -moz-available;
 	width: -webkit-fill-available;
 	width: stretch;
+}
+
+main form input {
+	line-height: 1em
 }
 
 main form textarea {
@@ -214,9 +256,8 @@ main form input[type=submit] {
 	width: auto;
 	background-color: var(--primary-color);
 	font-weight: bold;
-	color: var(--text-color);
+	color: var(--light-text-color);
 	box-shadow: 0 0.3rem 0.3rem 0.1rem var(--box-shadow-color);
-	text-shadow: 0 0.1rem 0.1rem var(--text-shadow-color);
 }
 
 .presentation {
@@ -250,8 +291,7 @@ main form input[type=submit] {
 .presentation aside button {
 	width: 100%;
 	background-color: var(--primary-color);
-	color: var(--text-color);
-	text-shadow: 0 0.1rem 0.1rem var(--text-shadow-color);
+	color: var(--light-text-color);
 	border: 0 none;
 	font-size: 1.2rem;
 	padding: 0.5rem;
@@ -303,7 +343,6 @@ footer>a {
 	background: transparent;
 	padding: 0.1em;
 	box-shadow: none;
-	text-shadow: none;
 	vertical-align: middle;
 }
 
@@ -311,4 +350,34 @@ textarea#content {
 	font-family: 'InconsolataNerdFontMono';
 	font-weight: 400;
 	font-size: 150%;
+}
+
+fieldset {
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+	gap: 0.5em;
+	align-items: center;
+}
+
+fieldset label {
+	justify-self: end;
+}
+
+fieldset input {
+	justify-self: start;
+	box-shadow: 0 0 3px var(--border-color);
+	background: var(--background-color);
+	color: var(--dark-text-color);
+}
+
+fieldset button {
+	grid-column-start: 1;
+	grid-column-end: 3;
+	justify-self: center;
+}
+
+button#theme {
+	margin-left: 1em;
+	font-family: "InconsolataNerdFontMono";
+	font-size: 120%;
 }
