@@ -50,6 +50,7 @@ body {
 	color: var(--dark-text-color);
 	font-family: 'Quicksand', sans-serif;
 	line-height: 1.5rem;
+	font-size: 128%;
 	font-weight: 500;
 }
 
@@ -68,11 +69,10 @@ main {
 
 footer {
 	flex: 0;
-	align-items: center;
-	justify-content: center;
-	display: flex;
-	flex-direction: row;
 	padding: 0.3em;
+	line-height: 200%;
+	text-align: center;
+	box-shadow: 0 -0.2rem 0.4rem var(--box-shadow-color);
 }
 
 header {
@@ -155,12 +155,13 @@ main form {
 	width: 49%;
 	height: 100%;
 	align-items: center;
-	font-size: 120%;
 }
 
 main form textarea {
 	width: 100%;
 	flex: 1;
+	background-color: var(--background-color);
+	color: var(--dark-text-color);
 }
 
 main:has(>form) {
@@ -190,10 +191,6 @@ body>button, body form>* {
 
 body form input {
 	border: 1px solid var(--border-color);
-}
-
-body form {
-	display: inline-block;
 }
 
 main a {
