@@ -281,6 +281,7 @@ main form input[type=submit] {
 .presentation aside img {
 	aspect-ratio: 3/4;
 	width: 240px;
+	object-fit: cover;
 }
 
 .presentation aside button {
@@ -297,6 +298,7 @@ main form input[type=submit] {
 	flex-direction: column;
 	min-height: 100px;
 	width: 100%;
+	margin: 0;
 }
 .presentation aside {
 	order: -1;
