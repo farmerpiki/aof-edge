@@ -131,16 +131,11 @@ nav input {
 @media only screen and (max-width: 900px) {
 	header nav {
 		display: grid;
-		grid-template-columns: auto auto auto auto;
+		grid-template-columns: auto 1fr auto auto;
 	}
-
-	header nav span#spacer {
-		background: transparent;
-		display: inline-block;
-		width: 10px;
-		height: 10px;
-	}
-
+  nav button#theme {
+    justify-self: flex-start;
+  }
 	nav label {
 		display: block;
 	}
@@ -377,7 +372,6 @@ fieldset button {
 }
 
 button#theme {
-	margin-left: 1em;
 	font-family: "InconsolataNerdFontMono";
 	font-size: 120%;
 }
