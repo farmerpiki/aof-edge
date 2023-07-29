@@ -84,6 +84,7 @@ header {
 	width: -moz-available;
 	width: -webkit-fill-available;
 	width: stretch;
+	box-shadow: 0 0.2rem 0.4rem var(--box-shadow-color);
 }
 
 header nav {
@@ -180,7 +181,7 @@ a, nav label, body button, form button {
 	text-decoration: none;
 	font-weight: bold;
 	border: 1px var(--border-color) solid;
-	box-shadow: 0 0.3rem 0.3rem 0.1rem var(--border-color);
+	box-shadow: 0rem 0.2rem 0.2rem var(--box-shadow-color);
 }
 
 body>button, body form>* {
@@ -311,6 +312,7 @@ main form input[type=submit] {
     position: absolute;
     right: 3.5rem;
     top: 3.5rem;
+    color: black;
 }
 
 #notification.success {
