@@ -5,7 +5,7 @@ marked.use({
   headerIds: false
 });
 
-function render_html(body, options = {}) {
+function render_html(body, options = {}, extra_head = "") {
   if (!('status' in options))
     options['status'] = 200;
 
@@ -23,6 +23,7 @@ function render_html(body, options = {}) {
 <link rel="stylesheet" href="/pkg/style.css">
 <script src="/pkg/default.js"></script>
 <script src="/pkg/htmx.min.js"></script>
+` + extra_head + `
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Art of Feeling</title>
 </head>
@@ -104,7 +105,7 @@ async function render_editor(env, key) {
     value = "";
   }
 
-  return render_html(`<form class="editor" method="post"><textarea id="content" name="content">` + value + `</textarea><button type="submit">Salvează Pagina</button></form><main></main><div id="notification"></div>`, 200, `
+  return render_html(`<form class="editor" method="post"><textarea id="content" name="content">` + value + `</textarea><button type="submit">Salvează Pagina</button></form><main></main><div id="notification"></div>`, { "status": 200 }, `
 <script src="/pkg/marked.min.js"></script>
 <script src="/pkg/edit.js"></script>
   `);
@@ -113,18 +114,27 @@ async function render_editor(env, key) {
 function admin_user_creation_form() {
   return `
 <form method="post">
-<label>Nume: <input type="text" name="user" placeholder="Nume"/></label>
-<label>Parolă: <input type="password" name="pass" placeholder="Parolă"/></label>
+<fieldset>
+<legend>Crează un utilizator nou</legend>
+<label for="user">Nume:</label><input type="text" id="user" name="user" placeholder="Nume"/>
+<label for="pass">Parolă:</label><input type="password" id="pass" name="pass" placeholder="Parolă"/>
 <button type="submit">Crează cont administrator!</button>
+</fieldset>
 </form>
 `;
 }
 async function render_create_admin() {
-  return render_html(admin_user_creation_form());
+  return render_html(admin_user_creation_form(),
+    {
+      headers: {
+        "Cache-Control": "no-store",
+      }
+    },
+  );
 }
 
 async function render_admin(env) {
-  return render_html('<a href="/logout">Deconectare</a>',
+  return render_html(admin_user_creation_form() + '<a href="/logout">Deconectare</a>',
     {
       headers: {
         "Cache-Control": "no-store",
