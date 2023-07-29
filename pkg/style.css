@@ -49,8 +49,8 @@ body {
 	background: var(--background-color);
 	color: var(--dark-text-color);
 	font-family: 'Quicksand', sans-serif;
-	line-height: 1.5rem;
-	font-size: 128%;
+	line-height: 1.66rem;
+	font-size: 110%;
 	font-weight: 500;
 }
 
@@ -374,5 +374,5 @@ fieldset button {
 
 button#theme {
 	font-family: "InconsolataNerdFontMono";
-	font-size: 120%;
+	font-size: 100%;
 }
