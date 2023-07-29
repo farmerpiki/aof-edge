@@ -71,11 +71,11 @@ function render_error(status, status_text, reason) {
 }
 
 function render_400(reason) {
-  render_error(400, 'Cerere incorectă', reason);
+  return render_error(400, 'Cerere incorectă', reason);
 }
 
 function render_401(reason) {
-  render_error(401, 'Neautorizat', reason);
+  return render_error(401, 'Neautorizat', reason);
 }
 
 function render_404() {
@@ -152,7 +152,7 @@ async function render_blog_entry(env, key) {
 }
 
 async function verifyCredentials(env, user, pass) {
-  const hashed_password = env.Aof.get('auth:' + user);
+  const hashed_password = await env.Aof.get('admin:' + user);
   return (hashed_password === await passwordHash(pass));
 }
 
@@ -184,13 +184,14 @@ async function basicAuthentication(request) {
   const decoded = new TextDecoder().decode(buffer).normalize();
 
   const index = decoded.indexOf(":");
+  console.log(`decoded: ${decoded}, index: ${/[\0-\x1F\x7F]/.test(decoded)}`);
 
   if (index === -1 || /[\0-\x1F\x7F]/.test(decoded)) {
     return {
       user: null,
       pass: null,
       reason: "Valoarea primita pentru autorizare nu este validă.",
-    }
+    };
   }
 
   return {
@@ -204,7 +205,8 @@ export default {
   async fetch(request, environment, context) {
     var authenticated = false;
     if (request.headers.has("Authorization")) {
-      const { user, pass, reason } = basicAuthentication(request);
+      const { user, pass, reason } = await basicAuthentication(request);
+      console.log(`user: ${user}, reason: ${reason}`);
       if (reason === null)
         authenticated = verifyCredentials(environment, user, pass);
       else
@@ -218,16 +220,22 @@ export default {
       render_400("Vă rugăm folosiți o conexiune prin HTTPS!");
     }
     if (request.method === "GET") {
-      if (["/", "/about", "/schedule", "/contact", "/services"].includes(pathname)) {
-        return render_markdown(environment, pathname);
+      if (pathname.startsWith('/blog/')) {
+        if (authenticated)
+          return render_blog_editor(environment, pathname.substring(5));
+        else
+          return render_blog_entry(environment, pathname.substring(5));
+      } else if (pathname === '/blog') {
+        return render_blog_page(environment);
       } else if (pathname === '/admin') {
         if (authenticated) {
-          return render_admin(env);
+          return render_admin(environment);
         }
         if (request.headers.has("Authorization")) {
           render_401('Credențiale incorecte.');
         }
         const users = await environment.AoF.list({ "prefix": "admin:", "limit": 1, });
+        console.log(`users: ${JSON.stringify(users)}`);
         if (users["keys"].length === 0) {
           return render_create_admin();
         } else {
@@ -238,30 +246,47 @@ export default {
             },
           });
         }
-      } else if (pathname.startsWith('/edit/')) {
-        const sub_path = pathname.substring(5);
-        if (sub_path.startsWith('/blog/')) {
-          return render_blog_editor(environment, sub_path.substring(5));
-        } else {
-          return render_editor(environment, sub_path);
-        }
-      } else if (pathname.startsWith('/blog/')) {
-        return render_blog_entry(environment, pathname.substring(5));
-      } else if (pathname === '/blog') {
-        return render_blog_page(environment);
+      } else if (pathname === '/logout') {
+        return render_401("You are logged out.");
       } else {
-        return render_404();
+        if (authenticated)
+          return render_editor(environment, pathname);
+        else
+          return render_markdown(environment, pathname);
       }
     } else if (request.method === "POST") {
-      if (!pathname.startsWith('/edit/'))
-        return new Response('{"error": "bad request"}', 400);
-      var subpath = pathname.substring(5);
-      if (subpath.startsWith('/blog/')) {
-
+      if (pathname === '/blog')
+        return new Response('{"error": "bad request"}', { "status": 400 });
+      if (pathname === '/logout')
+        return new Response('You are logged out.', { "status": 401 });
+      if (pathname === '/admin') {
+        const body = await request.formData();
+        const { user, pass } = Object.fromEntries(body);
+        if (!user || !pass)
+          return render_400('Cerere invalidă respinsă.');
+        if (/[\0-\x1F\x7F]/.test(user) || /[\0-\x1F\x7F]/.test(pass))
+          return render_400('Cerere invalidă! Caractere nepermise prezente.');
+        if (authenticated) {
+          const hashed_password = await passwordHash(pass);
+          await environment.Aof.put('admin:' + user, hashed_password);
+          return new Response('{success: true}');
+        } else {
+          const users = await environment.AoF.list({ "prefix": "admin:", "limit": 1, });
+          if (users["keys"].length === 0) {
+            const hashed_password = await passwordHash(pass);
+            console.log(`user = ${user}, pass = ${pass}, hashed_password = ${hashed_password}`);
+            await environment.AoF.put('admin:' + user, hashed_password);
+            return new Response('{success: true}');
+          } else {
+            return render_401('Autentificare necesară!');
+          }
+        }
+      }
+      if (pathname.startsWith('/blog/')) {
       } else {
-        var json = await request.json()
-        await environment.AoF.put(subpath, json.content);
-        return new Response('ok: ' + json.content);
+        var json = await request.json();
+        await environment.AoF.put(pathname, json.content);
+        return new Response('{success: true}');
       }
     }
     return render_404();
