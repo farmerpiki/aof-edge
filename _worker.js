@@ -207,7 +207,6 @@ async function basicAuthentication(request) {
   const decoded = new TextDecoder().decode(buffer).normalize();
 
   const index = decoded.indexOf(":");
-  console.log(`decoded: ${decoded}, index: ${/[\0-\x1F\x7F]/.test(decoded)}`);
 
   if (index === -1 || /[\0-\x1F\x7F]/.test(decoded)) {
     return {
@@ -247,7 +246,6 @@ export default {
     var authenticated = false;
     if (request.headers.has("Authorization")) {
       const { user, pass, reason } = await basicAuthentication(request);
-      console.log(`user: ${user}, reason: ${reason}`);
       if (reason === null)
         authenticated = verifyCredentials(environment, user, pass);
       else
@@ -276,7 +274,6 @@ export default {
           render_401('Credențiale incorecte.');
         }
         const users = await environment.AoF.list({ "prefix": "admin:", "limit": 1, });
-        console.log(`users: ${JSON.stringify(users)}`);
         if (users["keys"].length === 0) {
           return render_create_admin();
         } else {
@@ -291,7 +288,6 @@ export default {
         return render_401("You are logged out.");
       } else {
         const allPages = await environment.AoF.list();
-        console.log("all pages: ", JSON.stringify(allPages));
         if (authenticated)
           return render_editor(environment, 'page:', pathname);
         else
@@ -317,7 +313,6 @@ export default {
           const users = await environment.AoF.list({ "prefix": "admin:", "limit": 1, });
           if (users["keys"].length === 0) {
             const hashed_password = await passwordHash(pass);
-            console.log(`user = ${user}, pass = ${pass}, hashed_password = ${hashed_password}`);
             await environment.AoF.put('admin:' + user, hashed_password);
             return new Response('{success: true}');
           } else {
@@ -345,10 +340,6 @@ export default {
         }
         marked.use({ walkTokens });
         marked.parse(json.content);
-        console.log(`
-h1: ${title}
-p: ${preview}
-`);
         await environment.AoF.put('blog:' + pathname.substring(6), json.content, {
           "metadata": {
             "title": title,
