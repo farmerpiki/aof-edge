@@ -127,13 +127,19 @@ async function render_blog_page(env) {
     return render_html("<h1>Blog</h1><p>Conținutul nu este disponibil momentan.");
 
   var result = "";
-  pages.keys.forEach(element => {
-    result += `
+  pages.keys.forEach((element) => {
+    if (element.hasOwnProperty("name")
+      && element.hasOwnProperty("metadata")
+      && element.metadata.hasOwnProperty("title")
+      && element.metadata.hasOwnProperty("preview")
+    )
+      result += `
 <h2>${escapeHtml(element.metadata.title)}</h2>
 <p>${escapeHtml(element.metadata.preview)}<a href=/blog/${encodeURIComponent(element.name.substring(5))}>... citește continuarea</a></p>`;
   });
 
-  return render_html("<h1>Blog</h1><p>" + JSON.stringify(pages) + "</p>" + result);
+  return render_html(`<h1>Blog</h1>
+${result}`);
 }
 
 function admin_user_creation_form() {
