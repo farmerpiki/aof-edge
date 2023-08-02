@@ -88,8 +88,8 @@ function render_404() {
   return response;
 }
 
-async function render_markdown(env, key) {
-  var value = await env.AoF.get(key);
+async function render_markdown(env, prefix, key) {
+  var value = await env.AoF.get(prefix + key);
 
   if (value === null) {
     return render_404();
@@ -98,8 +98,8 @@ async function render_markdown(env, key) {
   return render_html(marked.parse(value));
 }
 
-async function render_editor(env, key) {
-  var value = await env.AoF.get(key);
+async function render_editor(env, prefix, key) {
+  var value = await env.AoF.get(prefix + key);
 
   if (value === null) {
     value = "";
@@ -109,6 +109,31 @@ async function render_editor(env, key) {
 <script src="/pkg/marked.min.js"></script>
 <script src="/pkg/edit.js"></script>
   `);
+}
+
+function escapeHtml(unsafeText) {
+  return unsafeText
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+}
+
+async function render_blog_page(env) {
+  var pages = await env.AoF.list({ "prefix": 'blog:' });
+
+  if (pages === null)
+    return render_html("<h1>Blog</h1><p>Conținutul nu este disponibil momentan.");
+
+  var result = "";
+  pages.keys.forEach(element => {
+    result += `
+<h2>${escapeHtml(element.metadata.title)}</h2>
+<p>${escapeHtml(element.metadata.preview)}<a href=/blog/${encodeURIComponent(element.name.substring(5))}>... citește continuarea</a></p>`;
+  });
+
+  return render_html("<h1>Blog</h1><p>" + JSON.stringify(pages) + "</p>" + result);
 }
 
 function admin_user_creation_form() {
@@ -141,14 +166,6 @@ async function render_admin(env) {
       }
     },
   );
-}
-
-async function render_blog_editor(env, key) {
-  return render_html('blogeditor: ' + key);
-}
-
-async function render_blog_entry(env, key) {
-  return render_html('blogpost: ' + key);
 }
 
 async function verifyCredentials(env, user, pass) {
@@ -201,6 +218,24 @@ async function basicAuthentication(request) {
   };
 }
 
+function truncateText(input, length_overflow = 150) {
+  const isWhitespace = (char) => /\p{White_Space}/u.test(char);
+
+  if (input.length <= length_overflow) {
+    return input;
+  }
+
+  let cutPosition = -1;
+  for (let i = length_overflow; i < input.length; i++) {
+    if (isWhitespace(input[i])) {
+      cutPosition = i;
+      break;
+    }
+  }
+
+  return input.substring(0, cutPosition);
+}
+
 export default {
   async fetch(request, environment, context) {
     var authenticated = false;
@@ -222,9 +257,9 @@ export default {
     if (request.method === "GET") {
       if (pathname.startsWith('/blog/')) {
         if (authenticated)
-          return render_blog_editor(environment, pathname.substring(5));
+          return render_editor(environment, 'blog:', pathname.substring(6));
         else
-          return render_blog_entry(environment, pathname.substring(5));
+          return render_markdown(environment, 'blog:', pathname.substring(6));
       } else if (pathname === '/blog') {
         return render_blog_page(environment);
       } else if (pathname === '/admin') {
@@ -249,10 +284,12 @@ export default {
       } else if (pathname === '/logout') {
         return render_401("You are logged out.");
       } else {
+        const allPages = await environment.AoF.list();
+        console.log("all pages: ", JSON.stringify(allPages));
         if (authenticated)
-          return render_editor(environment, pathname);
+          return render_editor(environment, 'page:', pathname);
         else
-          return render_markdown(environment, pathname);
+          return render_markdown(environment, 'page:', pathname);
       }
     } else if (request.method === "POST") {
       if (pathname === '/blog')
@@ -283,9 +320,39 @@ export default {
         }
       }
       if (pathname.startsWith('/blog/')) {
+        var json = await request.json();
+        var title = null;
+        var preview = null;
+        const walkTokens = (token) => {
+          if (token.type === 'heading') {
+            if (token.depth == 1) {
+              if (title === null) {
+                title = token.text;
+              } else {
+                token.depth += 1;
+              }
+            }
+          } else if (token.type === 'paragraph') {
+            if (preview === null)
+              preview = truncateText(token.text);
+          }
+        }
+        marked.use({ walkTokens });
+        marked.parse(json.content);
+        console.log(`
+h1: ${title}
+p: ${preview}
+`);
+        await environment.AoF.put('blog:' + pathname.substring(6), json.content, {
+          "metadata": {
+            "title": title,
+            "preview": preview,
+          }
+        });
+        return new Response('{success: true}');
       } else {
         var json = await request.json();
-        await environment.AoF.put(pathname, json.content);
+        await environment.AoF.put('page:' + pathname, json.content);
         return new Response('{success: true}');
       }
     }
