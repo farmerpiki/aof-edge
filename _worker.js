@@ -245,7 +245,7 @@ function truncateText(input, length_overflow = 150) {
 }
 
 export default {
-  async fetch(request, environment, context) {
+  async fetch(request, environment, _context) {
     var authenticated = false;
     if (request.headers.has("Authorization")) {
       const { user, pass, reason } = await basicAuthentication(request);
@@ -290,7 +290,6 @@ export default {
       } else if (pathname === '/logout') {
         return render_401("You are logged out.");
       } else {
-        const allPages = await environment.AoF.list();
         if (authenticated)
           return render_editor(environment, 'page:', pathname);
         else
