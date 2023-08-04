@@ -68,8 +68,8 @@ ${body}
 
 function render_error(status, status_text, reason) {
   var response = render_html(`
-<h1>` + status_text + ` (Eroare ` + status + `)</h1>
-<p>` + reason + `</p>`, { "status": status });
+<h1>${status_text} (Eroare ${status})</h1>
+<p>${reason}</p>`, { "status": status });
   return response;
 }
 
