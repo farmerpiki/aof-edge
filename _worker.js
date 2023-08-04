@@ -22,6 +22,8 @@ function render_html(body, options = {}, extra_head = "") {
 <link rel="icon" href="/pkg/favicon.ico">
 <link rel="stylesheet" href="/pkg/style.css" as="style">
 <link rel="preload" href="/pkg/InconsolataNerdFontMono-Regular.woff2" as="font" type="font/woff2">
+<link rel="preload" href="/pkg/Quicksand.woff2" as="font" type="font/woff2">
+<link rel="preload" href="/pkg/DancingScript.woff2" as="font" type="font/woff2">
 <script src="/pkg/default.js"></script>
 <script src="/pkg/htmx.min.js"></script>
 ${extra_head}
