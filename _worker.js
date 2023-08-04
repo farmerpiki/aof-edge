@@ -23,7 +23,7 @@ function render_html(body, options = {}, extra_head = "") {
 <link rel="stylesheet" href="/pkg/style.css">
 <script src="/pkg/default.js"></script>
 <script src="/pkg/htmx.min.js"></script>
-` + extra_head + `
+${extra_head}
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Art of Feeling</title>
 </head>
@@ -42,7 +42,7 @@ function render_html(body, options = {}, extra_head = "") {
 </nav>
 </header>
 <main>
-` + body + `
+${body}
 </main>
 <footer>
 © 2023 Art of Feeling
