@@ -5,7 +5,7 @@ marked.use({
   headerIds: false
 });
 
-function render_html(body, options = {}, extra_head = "") {
+function render_html(body, options = {}, extra_head = "", hx_boost = "") {
   if (!('status' in options))
     options['status'] = 200;
 
@@ -30,7 +30,7 @@ ${extra_head}
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Art of Feeling</title>
 </head>
-<body>
+<body ${hx_boost}>
 <header>
 <nav>
 <a href="/">Art of Feeling</a>
@@ -91,14 +91,17 @@ function render_404() {
   return response;
 }
 
-async function render_markdown(env, prefix, key) {
+async function render_markdown(env, prefix, key, htmx_reply = false) {
   var value = await env.AoF.get(prefix + key);
 
   if (value === null) {
     return render_404();
   }
 
-  return render_html(marked.parse(value));
+  if (htmx_reply)
+    return new Response(marked.parse(value));
+  else
+    return render_html(marked.parse(value), {}, "", 'hx-boost="true" hx-target="main"');
 }
 
 async function render_editor(env, prefix, key) {
@@ -123,11 +126,15 @@ function escapeHtml(unsafeText) {
     .replace(/'/g, "&#x27;");
 }
 
-async function render_blog_page(env) {
+async function render_blog_page(env, htmx_reply = false, authenticated = false) {
   var pages = await env.AoF.list({ "prefix": 'blog:' });
 
-  if (pages === null)
-    return render_html("<h1>Blog</h1><p>Conținutul nu este disponibil momentan.");
+  if (pages === null) {
+    if (htmx_reply)
+      return new Response("<h1>Blog</h1><p>Conținutul nu este disponibil momentan.");
+    else
+      return render_html("<h1>Blog</h1><p>Conținutul nu este disponibil momentan.", {}, "", authenticated ? 'hx-boost="true" hx-target="main"' : "");
+  }
 
   var result = "";
   pages.keys.forEach((element) => {
@@ -141,8 +148,12 @@ async function render_blog_page(env) {
 <p>${escapeHtml(element.metadata.preview)}<a href=/blog/${encodeURIComponent(element.name.substring(5))}>... citește continuarea</a></p>`;
   });
 
-  return render_html(`<h1>Blog</h1>
+  if (htmx_reply)
+    return new Response(`<h1>Blog</h1>
 ${result}`);
+  else
+    return render_html(`<h1>Blog</h1>
+${result}`, {}, "", authenticated ? 'hx-boost="true" hx-target="main"' : "");
 }
 
 function admin_user_creation_form() {
@@ -266,9 +277,9 @@ export default {
         if (authenticated)
           return render_editor(environment, 'blog:', pathname.substring(6));
         else
-          return render_markdown(environment, 'blog:', pathname.substring(6));
+          return render_markdown(environment, 'blog:', pathname.substring(6), request.headers.has("Hx-Request"));
       } else if (pathname === '/blog') {
-        return render_blog_page(environment);
+        return render_blog_page(environment, request.headers.has("Hx-Request"));
       } else if (pathname === '/admin') {
         if (authenticated) {
           return render_admin(environment);
@@ -293,7 +304,7 @@ export default {
         if (authenticated)
           return render_editor(environment, 'page:', pathname);
         else
-          return render_markdown(environment, 'page:', pathname);
+          return render_markdown(environment, 'page:', pathname, request.headers.has("Hx-Request"));
       }
     } else if (request.method === "POST") {
       if (pathname === '/blog')
